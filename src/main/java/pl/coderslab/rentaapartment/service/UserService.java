@@ -6,18 +6,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.coderslab.rentaapartment.dao.UserDaoImpl;
 import pl.coderslab.rentaapartment.model.User;
 import pl.coderslab.rentaapartment.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class UserService{
 
     private UserRepository userRepository;
-    private UserDaoImpl userDao;
     private PasswordEncoder passwordEncoder;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);;
 
@@ -30,8 +28,9 @@ public class UserService{
     public void persistUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
+        user.setCreated(LocalDateTime.now());
         logger.info(user.toString());
-        userDao.saveUser(user);
+        userRepository.save(user);
     }
 
     public void mergeUser(User user) {
@@ -49,6 +48,7 @@ public class UserService{
 
     public boolean isEmailExist(String email) {
         Optional<User> user = userRepository.findByEmail(email);
+        logger.info(String.valueOf(user.isPresent()));
         return user.isPresent();
     }
 }

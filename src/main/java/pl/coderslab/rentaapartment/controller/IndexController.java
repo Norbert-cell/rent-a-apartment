@@ -1,18 +1,18 @@
 package pl.coderslab.rentaapartment.controller;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.coderslab.rentaapartment.model.User;
 import pl.coderslab.rentaapartment.service.UserService;
+import pl.coderslab.rentaapartment.validator.uniqueEmailValidator;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @Controller
 public class IndexController {
@@ -45,12 +45,10 @@ public class IndexController {
     }
     @PostMapping("/registry")
     @ResponseBody
-    public String registry(@ModelAttribute @Valid User user, BindingResult result){
+    public String registry(@ModelAttribute @Valid @Validated({uniqueEmailValidator.class})User user, BindingResult result){
         if(result.hasErrors()){
             return "registry";
         }
-        user.setRole("USER");
-        user.setCreated(LocalDateTime.now());
         userService.persistUser(user);
         return "dodano";
     }
