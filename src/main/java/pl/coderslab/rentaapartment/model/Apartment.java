@@ -1,24 +1,63 @@
 package pl.coderslab.rentaapartment.model;
 
+
+import pl.coderslab.rentaapartment.validator.AddressValidationGroup;
+import pl.coderslab.rentaapartment.validator.ApartmentValidationGroup;
+
 import javax.persistence.*;
-import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Apartment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Size(min = 5, max = 124,groups = {ApartmentValidationGroup.class})
+    @NotBlank(groups = {ApartmentValidationGroup.class})
     private String title;
+    @NotBlank(groups = {ApartmentValidationGroup.class})
+    @Column(length = 10000, columnDefinition = "TEXT")
+    @Size(min=20, max = 100000, groups ={ApartmentValidationGroup.class} )
     private String content;
+    @NotNull(groups = {ApartmentValidationGroup.class})
+    @Min(value = 1,groups = {ApartmentValidationGroup.class})
     private int apartmentArea;
+    @NotNull(groups = {ApartmentValidationGroup.class})
+    @Min(value = 1,groups = {ApartmentValidationGroup.class})
     private int rooms;
-    private Date created;
-    private Date updated;
+    @NotNull(groups = {ApartmentValidationGroup.class})
+    @Min(value = 1,groups = {ApartmentValidationGroup.class})
+    private Double price;
+    private LocalDateTime created;
+    private LocalDateTime updated;
     private boolean rented;
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @Valid
     private Address address;
-    @OneToOne
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User ownerUser;
+    @OneToOne(fetch = FetchType.LAZY)
+    private User tenantUser;
+    @Min(value = 1, groups = {ApartmentValidationGroup.class})
+    private Double myBills;
+
+    public Double getMyBills() {
+        return myBills;
+    }
+
+    public void setMyBills(Double myBills) {
+        this.myBills = myBills;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
     public long getId() {
         return id;
@@ -60,19 +99,19 @@ public class Apartment {
         this.rooms = rooms;
     }
 
-    public Date getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public Date getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
@@ -92,13 +131,22 @@ public class Apartment {
         this.address = address;
     }
 
-    public User getUser() {
-        return user;
+    public User getOwnerUser() {
+        return ownerUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwnerUser(User ownerUser) {
+        this.ownerUser = ownerUser;
     }
+
+    public User getTenantUser() {
+        return tenantUser;
+    }
+
+    public void setTenantUser(User tenantUser) {
+        this.tenantUser = tenantUser;
+    }
+
 
     @Override
     public String toString() {
@@ -108,11 +156,10 @@ public class Apartment {
                 ", content='" + content + '\'' +
                 ", apartmentArea=" + apartmentArea +
                 ", rooms=" + rooms +
+                ", price=" + price +
                 ", created=" + created +
                 ", updated=" + updated +
                 ", rented=" + rented +
-                ", address=" + address +
-                ", user=" + user +
                 '}';
     }
 }

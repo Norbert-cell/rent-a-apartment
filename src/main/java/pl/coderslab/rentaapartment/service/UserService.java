@@ -1,54 +1,44 @@
 package pl.coderslab.rentaapartment.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.rentaapartment.model.User;
 import pl.coderslab.rentaapartment.repository.UserRepository;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 @Service
-public class UserService{
+@Transactional
+public class UserService {
 
     private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, EntityManager entityManager) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.entityManager = entityManager;
     }
 
-    public void persistUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
-        user.setCreated(LocalDateTime.now());
-        logger.info(user.toString());
+    public boolean isExistEmail(String email) {
+        Optional<User> byUserName = userRepository.findByUserName(email);
+        return byUserName.isPresent();
+    }
+
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public void mergeUser(User user) {
-        userRepository.save(user);
+    public Optional<User> findByUserName(String name) {
+        return userRepository.findByUserName(name);
     }
 
-    public void removeUser(long userId){
-        User user = userRepository.findById(userId).orElseThrow();
-        userRepository.delete(user);
+    public Optional<User> findById(long id) {
+        return userRepository.findById(id);
     }
 
-    public UserDetails findByUserName(String userName) {
-        return userRepository.findByUserName(userName).orElseThrow();
-    }
-
-    public boolean isEmailExist(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        logger.info(String.valueOf(user.isPresent()));
-        return user.isPresent();
-    }
 }

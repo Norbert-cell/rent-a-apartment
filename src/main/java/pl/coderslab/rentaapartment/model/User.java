@@ -1,12 +1,16 @@
 package pl.coderslab.rentaapartment.model;
 
+import org.hibernate.validator.constraints.pl.NIP;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.coderslab.rentaapartment.validator.uniqueEmail;
+import pl.coderslab.rentaapartment.validator.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,30 +21,73 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NotBlank
+
+    @NotBlank(groups = {FirmValidationGroup.class, UserValidationGroup.class})
+    @UniqueEmail(groups = {FirmValidationGroup.class, UserValidationGroup.class})
+    @Column(name = "email")
+    @Pattern(regexp = "[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.([a-zA-Z]{2,}){1}",
+            groups = {FirmValidationGroup.class, UserValidationGroup.class})
     private String userName;
-    @NotBlank
+
+    @NotBlank(groups = {UserValidationGroup.class, EditUserValidationGroup.class})
+    @Column(name = "firstName")
+    @Pattern(regexp = "^[a-zA-Z]{2,15}$", groups = {UserValidationGroup.class})
     private String firstName;
-    @NotBlank
+
+    @NotBlank(groups = {FirmValidationGroup.class, EditFirmValidationGroup.class})
+    private String firmName;
+
+    @NotBlank(groups = {UserValidationGroup.class})
+    @Column(name = "lastName")
+    @Pattern(regexp = "^[a-zA-Z]{2,15}$",groups = {UserValidationGroup.class})
     private String lastName;
-    @NotBlank
-    @uniqueEmail
-    private String email;
-    @NotBlank
+
+    @NotBlank(groups = {FirmValidationGroup.class, UserValidationGroup.class})
+    @Size(min = 3, max = 48,groups = {FirmValidationGroup.class, UserValidationGroup.class})
     private String password;
+
     private LocalDateTime created;
-    private String role;
-    @OneToOne
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "tenantUser")
     private Apartment rentedHouse;
-    @ManyToMany
-    private List<Apartment> observedApartments;
-    @OneToMany
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerUser")
     private List<Apartment> auctions;
+
+    @NotBlank(groups = {FirmValidationGroup.class})
+    @NIP(groups = {FirmValidationGroup.class})
+    private String nip;
+
+    @REGON(groups = {FirmValidationGroup.class})
+    @NotBlank(groups =
+            FirmValidationGroup.class)
+    private String regon;
+
+    private boolean isEnabled;
+
+    public User() {
+    }
+
+    public User(long id, @NotBlank String userName, @NotBlank String firstName, @NotBlank String lastName, @NotBlank String password) {
+        this.id = id;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
+
+    public String getFullName(){
+        return this.firstName +" " + this.lastName;
+    }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Collections.singleton(new SimpleGrantedAuthority(role.getAuthority()));
     }
 
     @Override
@@ -70,7 +117,19 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public String getFirmName() {
+        return firmName;
+    }
+
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
     }
 
     public long getId() {
@@ -89,20 +148,20 @@ public class User implements UserDetails {
         this.userName = userName;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setPassword(String password) {
@@ -117,11 +176,11 @@ public class User implements UserDetails {
         this.created = created;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -133,12 +192,20 @@ public class User implements UserDetails {
         this.rentedHouse = rentedHouse;
     }
 
-    public List<Apartment> getObservedApartments() {
-        return observedApartments;
+    public String getNip() {
+        return nip;
     }
 
-    public void setObservedApartments(List<Apartment> observedApartments) {
-        this.observedApartments = observedApartments;
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    public String getRegon() {
+        return regon;
+    }
+
+    public void setRegon(String regon) {
+        this.regon = regon;
     }
 
     public List<Apartment> getAuctions() {
@@ -149,13 +216,6 @@ public class User implements UserDetails {
         this.auctions = auctions;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 
     @Override
     public String toString() {
@@ -163,8 +223,16 @@ public class User implements UserDetails {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
+                ", firmName='" + firmName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", created=" + created +
+                ", role=" + role +
+                ", rentedHouse=" + rentedHouse +
+                ", auctions=" + auctions +
+                ", nip='" + nip + '\'' +
+                ", regon='" + regon + '\'' +
+                ", isEnabled=" + isEnabled +
                 '}';
     }
 }

@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import pl.coderslab.rentaapartment.converter.AddressConverter;
+import pl.coderslab.rentaapartment.converter.ApartmentConverter;
+import pl.coderslab.rentaapartment.converter.UserConverter;
 
 import javax.validation.Validator;
 import java.util.HashSet;
@@ -24,6 +27,7 @@ import java.util.Set;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"pl.coderslab.rentaapartment.repository"})
 public class AppConfig {
+
 
     @Bean(name="localeResolver")
     public LocaleContextResolver getLocaleContextResolver() {
@@ -49,6 +53,9 @@ public class AppConfig {
 
     public Set<Converter> getConverters() {
         Set<Converter> converters = new HashSet<>();
+        converters.add(new UserConverter());
+        converters.add(new ApartmentConverter());
+        converters.add(new AddressConverter());
         return converters;
     }
     @Bean(name = "conversionService")
