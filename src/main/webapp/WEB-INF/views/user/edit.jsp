@@ -12,13 +12,12 @@
     <form:hidden path="role"/><br/>
     <form:hidden path="created"/><br/>
     <form:hidden path="password"/><br/>
-<%--    <form:hidden path="userName"/><br/>--%>
+    <form:hidden path="userName"/><br/>
+    <form:hidden path="isEnabled"/><br/>
     Imie: <form:input path="firstName"/> <br/>
     <form:errors path="firstName"/><br/>
     Nazwisko: <form:input path="lastName"/> <br/>
     <form:errors path="lastName"/><br/>
-    Email: <form:input path="userName"/><br/>
-<%--    <form:errors path="userName"/><br/>--%>
     <input type="submit" value="Wyslij">
 
 </form:form>

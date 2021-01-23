@@ -1,5 +1,7 @@
 package pl.coderslab.rentaapartment.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.rentaapartment.model.Apartment;
@@ -27,8 +29,8 @@ public class ApartmentService {
         apartmentRepository.save(apartment);
     }
 
-    public List<Apartment> findAll() {
-        return apartmentRepository.findAll();
+    public Page<Apartment> findAllByTenantUserIsNull(Pageable page) {
+        return apartmentRepository.findAllApartmentsByTenantUserIsNull(page);
     }
 
     public List<Apartment> findApartmentByUser(User user){
@@ -39,21 +41,24 @@ public class ApartmentService {
         return apartmentRepository.findById(apartmentId);
     }
 
-    public List<Apartment> userActiveAuctions(User user){
-        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = false")
-                .setParameter("user",user)
-                .getResultList();
+//    public List<Apartment> userActiveAuctions(User user){
+//        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = false")
+//                .setParameter("user",user)
+//                .getResultList();
+//    }
+
+//    public List<Apartment> userRentedApartment(User user) {
+//        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = true")
+//                .setParameter("user",user)
+//                .getResultList();
+//    }
+
+    public Page<Apartment> userActiveAuctions(User user, Pageable page){
+        return apartmentRepository.findAllByOwnerUserAndTenantUserIsNull(user,page);
     }
 
-    public List<Apartment> userRentedApartment(User user) {
-        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = true")
-                .setParameter("user",user)
-                .getResultList();
+    public Page<Apartment> userRentedApartment(User user, Pageable page) {
+        return apartmentRepository.findAllByOwnerUserAndRentedIsTrue(user,page);
     }
 
-    public List<Apartment> findRentedApartmentsByUser(User user) {
-       return entityManager.createQuery("select a from Apartment a where a.rented=true and a.ownerUser=:user")
-                .setParameter("user",user)
-                .getResultList();
-    }
 }

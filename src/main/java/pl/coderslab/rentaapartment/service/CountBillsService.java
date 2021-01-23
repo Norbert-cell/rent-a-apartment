@@ -38,4 +38,25 @@ public class CountBillsService {
     }
 
 
+    public double countEarningFromRentedApartment(List<Apartment> apartments) {
+        return apartments.stream()
+                .filter(x -> x.getTenantUser() != null)
+                .map(Apartment::getPrice)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+    }
+
+    public double fullCostsUpKeepApartments(List<Apartment> apartments) {
+        return apartments.stream()
+                .map(Apartment::getMyBills)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+    }
+
+    public double costsUnrentedApartments(List<Apartment> allApartmentsUser) {
+        return allApartmentsUser.stream().filter(x -> x.getTenantUser() == null)
+                .map(x->x.getMyBills())
+                .mapToDouble(Double::doubleValue)
+                .sum();
+    }
 }

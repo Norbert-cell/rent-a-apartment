@@ -1,6 +1,5 @@
 package pl.coderslab.rentaapartment.controller;
 
-import javassist.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +60,7 @@ public class IndexController {
             model.addAttribute("errorMessage", "Nie poprawny email lub haslo, lub nie aktywowales konta!");
             return "index/login";
         }
-        return "redirect:/app/";
+        return "redirect:/app/1";
     }
 
     @GetMapping("/logout")

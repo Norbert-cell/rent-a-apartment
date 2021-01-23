@@ -28,7 +28,6 @@ import java.util.Set;
 @EnableJpaRepositories(basePackages = {"pl.coderslab.rentaapartment.repository"})
 public class AppConfig {
 
-
     @Bean(name="localeResolver")
     public LocaleContextResolver getLocaleContextResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();

@@ -8,5 +8,13 @@
     Utworzono: <h3>${apartment.created}</h3><br/>
     Wlasciciel: <h3>${apartment.ownerUser.fullName}</h3><br/>
     Adres: <h3>${apartment.address.fullStreet}</h3><br/>
-    Najemca: <h3>${apartment.tenantUser.fullName}</h3>
-<a href="<c:url value="/app/"/>">Wroc</a>
+    Najemca:
+<c:choose>
+    <c:when test="${apartment.tenantUser.firstName != null}">
+        ${apartment.tenantUser.fullName}
+    </c:when>
+    <c:otherwise>
+        ${apartment.tenantUser.firmName}
+    </c:otherwise>
+</c:choose><br/>
+<a href="<c:url value="/app/1"/>">Wroc</a>
