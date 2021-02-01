@@ -1,14 +1,24 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-
+<html>
 <head>
+    <script type="text/javascript">
+        updateList = function() {
+            var input = document.getElementById('images');
+            var output = document.getElementById('fileList');
+            var children = "";
+            for (var i = 0; i < input.files.length; ++i) {
+                children += '<li>' + input.files.item(i).name + '</li>';
+            }
+            output.innerHTML = '<ul>'+children+'</ul>';
+        }
+    </script>
     <meta charset="UTF-8">
 </head>
 <body>
 <h2>Dodaj aukcje</h2>
 
-<form:form method="post" modelAttribute="apartment">
-<%--    <form:hidden path="id"/> <br/>--%>
+<form:form method="post" modelAttribute="apartment" enctype="multipart/form-data">
     Tytuł: <form:input path="title"/> <br/>
     <form:errors path="title"/><br/>
     Opis: <form:textarea path="content"/> <br/>
@@ -29,7 +39,11 @@
     <form:errors path="address.postCode"/><br/>
     Miasto: <form:input path="address.city"/><br/>
     <form:errors path="address.city"/><br/>
+    <label for="images">Wstaw zdjecia</label>
+    <input type="file" accept="image/jpeg, image/png" multiple="multiple" name="images" id="images" onchange="javascript:updateList()"/>
+    <p>Wybrane pliki:</p>
+    <div id="fileList"></div>
     <input type="submit" value="Wyslij">
-
 </form:form>
 </body>
+</html>

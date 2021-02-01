@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
+<c:if test="${apartmentDoesntExist}">
     Tytuł: <h1>${apartment.title}</h1><br/>
     Opis: <h3>${apartment.content}</h3><br/>
     Powierzchnia: <h3>${apartment.apartmentArea}m2</h3><br/>
@@ -17,4 +18,8 @@
         ${apartment.tenantUser.firmName}
     </c:otherwise>
 </c:choose><br/>
+<a href="<c:url value="/app/message/report-fault/${apartment.id}"/>">Zglos usterke</a>
+</c:if>
+Nie wynajales apartamentu
 <a href="<c:url value="/app/1"/>">Wroc</a>
+

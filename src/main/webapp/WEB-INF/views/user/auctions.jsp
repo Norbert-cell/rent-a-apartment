@@ -21,4 +21,5 @@
         <a href="/app/user/auctions/${page+1}">${page+1}</a>
     </c:forEach>
 </c:if>
-<a href="/app/1">Wroc</a>
+<a href="<c:url value="/app/1" />">Wroc</a><br/>
+

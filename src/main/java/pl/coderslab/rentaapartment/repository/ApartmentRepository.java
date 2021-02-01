@@ -22,4 +22,6 @@ public interface ApartmentRepository extends JpaRepository<Apartment,Long>, Pagi
 
     Page<Apartment> findAllByOwnerUserAndRentedIsTrue(User user, Pageable page);
 
+    Apartment findApartmentByTenantUser(User userToCheckIsrentedApartmentbyhim);
+
 }
