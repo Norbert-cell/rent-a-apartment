@@ -7,7 +7,8 @@
 </head>
 <body>
 <h2>Edycja apartamentu</h2>
-        <form:form method="post" modelAttribute="apartment">
+        <form:form method="post" modelAttribute="apartment" enctype="multipart/form-data">
+            <input type="file" accept="image/jpeg, image/png" multiple="multiple" name="images" id="images"/>
             <form:hidden path="id"/> <br/>
             <form:hidden path="created"/><br/>
             <form:hidden path="rented"/><br/>

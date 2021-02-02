@@ -27,13 +27,10 @@ public class CountBillsService {
                 .map(x -> x.getMyBills())
                 .mapToDouble(Double::doubleValue)
                 .sum();
-        System.out.println(sumBills);
         double priceFromApartment = allByOwnerUser.stream()
                 .map(x -> x.getPrice())
                 .mapToDouble(Double::doubleValue)
                 .sum();
-        System.out.println(priceFromApartment);
-        System.out.println(priceFromApartment - sumBills);
         return priceFromApartment - sumBills;
     }
 
@@ -55,8 +52,18 @@ public class CountBillsService {
 
     public double costsUnrentedApartments(List<Apartment> allApartmentsUser) {
         return allApartmentsUser.stream().filter(x -> x.getTenantUser() == null)
-                .map(x->x.getMyBills())
+                .map(Apartment::getMyBills)
                 .mapToDouble(Double::doubleValue)
                 .sum();
+    }
+
+    public long getMyRentedApartmentsCount(List<Apartment> allApartmentsUser) {
+        return allApartmentsUser.stream().filter(x ->x.getTenantUser() != null).count();
+    }
+
+    public double getCostsFaultByApartments(List<Apartment> allApartmentsUser) {
+        allApartmentsUser.stream()
+                .filter(x -> x.getTenantUser() != null);
+        return 0;
     }
 }

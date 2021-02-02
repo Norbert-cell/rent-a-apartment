@@ -10,6 +10,7 @@ import pl.coderslab.rentaapartment.repository.ApartmentRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class ApartmentService {
     }
 
     public void saveApartment(Apartment apartment){
+
         apartmentRepository.save(apartment);
     }
 
@@ -33,32 +35,22 @@ public class ApartmentService {
         return apartmentRepository.findAllApartmentsByTenantUserIsNull(page);
     }
 
-    public List<Apartment> findApartmentByUser(User user){
-        return apartmentRepository.findAllByOwnerUser(user);
+    public Boolean findApartmentByUserToCheckIsOwnerUser(User user, Optional<Apartment> apartmentToEdit){
+        return apartmentRepository.findAllByOwnerUser(user).stream()
+                .anyMatch(x-> x.getOwnerUser() == apartmentToEdit.map(Apartment::getOwnerUser).orElse(new User()));
     }
 
     public Optional<Apartment> findById(long apartmentId) {
         return apartmentRepository.findById(apartmentId);
     }
 
-//    public List<Apartment> userActiveAuctions(User user){
-//        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = false")
-//                .setParameter("user",user)
-//                .getResultList();
-//    }
-
-//    public List<Apartment> userRentedApartment(User user) {
-//        return entityManager.createQuery("select a from Apartment a where a.ownerUser=:user and a.rented = true")
-//                .setParameter("user",user)
-//                .getResultList();
-//    }
-
-    public Page<Apartment> userActiveAuctions(User user, Pageable page){
-        return apartmentRepository.findAllByOwnerUserAndTenantUserIsNull(user,page);
+    public boolean checkIsRentedApartment(Optional<Apartment> apartment) {
+        return apartment.stream().anyMatch(Apartment::isRented);
     }
 
-    public Page<Apartment> userRentedApartment(User user, Pageable page) {
-        return apartmentRepository.findAllByOwnerUserAndRentedIsTrue(user,page);
+
+    public Apartment getOne(long id) {
+        return apartmentRepository.getOne(id);
     }
 
 }

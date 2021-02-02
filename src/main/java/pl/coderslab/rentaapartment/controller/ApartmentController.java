@@ -7,17 +7,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.rentaapartment.model.Apartment;
+import pl.coderslab.rentaapartment.model.Image;
 import pl.coderslab.rentaapartment.model.User;
 import pl.coderslab.rentaapartment.service.AddressService;
 import pl.coderslab.rentaapartment.service.ApartmentService;
+import pl.coderslab.rentaapartment.service.ImageService;
 import pl.coderslab.rentaapartment.service.UserService;
 import pl.coderslab.rentaapartment.validator.AddressValidationGroup;
 import pl.coderslab.rentaapartment.validator.ApartmentValidationGroup;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/app/apartment")
@@ -26,11 +29,38 @@ public class ApartmentController {
     private final UserService userService;
     private final ApartmentService apartmentService;
     private final AddressService addressService;
+    private final ImageService imageService;
 
-    public ApartmentController(UserService userService, ApartmentService apartmentService, AddressService addressService) {
+    public ApartmentController(UserService userService, ApartmentService apartmentService, AddressService addressService, ImageService imageService) {
         this.userService = userService;
         this.apartmentService = apartmentService;
         this.addressService = addressService;
+        this.imageService = imageService;
+    }
+
+    @GetMapping("/add-apartment")
+    public String initaddApartment(Model model){
+        model.addAttribute("apartment", new Apartment());
+        return "apartment/add";
+    }
+
+    @PostMapping("/add-apartment")
+    public String addApartment(@ModelAttribute @Validated({ApartmentValidationGroup.class, AddressValidationGroup.class}) Apartment apartment,
+                               BindingResult result, Principal principal,@RequestParam("images") List<MultipartFile> images) throws NotFoundException {
+        if (result.hasErrors()){
+            return "apartment/add";
+        }
+        List<Image> imagesList = imageService.uploadFile(images);
+
+        apartment.setImages(imagesList);
+
+        User owner = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
+        apartment.setCreated(LocalDateTime.now());
+        apartment.setRented(false);
+        apartment.setOwnerUser(owner);
+        addressService.saveAddress(apartment.getAddress());
+        apartmentService.saveApartment(apartment);
+        return "redirect:/app/1";
     }
 
 
@@ -58,9 +88,8 @@ public class ApartmentController {
     public String editApartment(Model model,@PathVariable long id, Principal principal) throws NotFoundException {
         User ownerUser = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("No value present"));
         Optional<Apartment> apartmentToEdit = apartmentService.findById(id);
-        boolean foundedApartment = apartmentService.findApartmentByUser(ownerUser).stream()
-                .anyMatch(x-> x.getOwnerUser() == apartmentToEdit.map(Apartment::getOwnerUser).orElse(new User()));
-        boolean isRentedApartment = apartmentToEdit.stream().anyMatch(Apartment::isRented);
+        boolean foundedApartment = apartmentService.findApartmentByUserToCheckIsOwnerUser(ownerUser,apartmentToEdit);
+        boolean isRentedApartment = apartmentService.checkIsRentedApartment(apartmentToEdit);
         if(foundedApartment) {
             if(isRentedApartment){
                 return "redirect:/app/user/auctions/1";
@@ -75,10 +104,13 @@ public class ApartmentController {
 
     @PostMapping("/edit/{id}")
     public String editApartment(@ModelAttribute @Validated({ApartmentValidationGroup.class, AddressValidationGroup.class}) Apartment apartment,
-                                BindingResult result){
+                                BindingResult result, @RequestParam("images") List<MultipartFile> images){
         if (result.hasErrors()){
             return "apartment/edit";
         }
+        List<Image> imagesList = imageService.uploadFile(images);
+
+        apartment.setImages(imagesList);
         apartment.setUpdated(LocalDateTime.now());
         addressService.saveAddress(apartment.getAddress());
         apartmentService.saveApartment(apartment);

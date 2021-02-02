@@ -1,13 +1,14 @@
 package pl.coderslab.rentaapartment.model;
 
 
-import pl.coderslab.rentaapartment.validator.AddressValidationGroup;
 import pl.coderslab.rentaapartment.validator.ApartmentValidationGroup;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Apartment {
@@ -42,6 +43,16 @@ public class Apartment {
     private User tenantUser;
     @Min(value = 1, groups = {ApartmentValidationGroup.class})
     private Double myBills;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 
     public Double getMyBills() {
         return myBills;

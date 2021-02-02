@@ -81,9 +81,11 @@ public class User implements UserDetails {
     }
 
     public String getFullName(){
+        if (role == Role.ROLE_FIRM){
+            return this.firmName;
+        }
         return this.firstName +" " + this.lastName;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

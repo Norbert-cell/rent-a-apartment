@@ -11,11 +11,11 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import pl.coderslab.rentaapartment.converter.AddressConverter;
-import pl.coderslab.rentaapartment.converter.ApartmentConverter;
-import pl.coderslab.rentaapartment.converter.UserConverter;
+import pl.coderslab.rentaapartment.converter.*;
 
 import javax.validation.Validator;
 import java.util.HashSet;
@@ -27,6 +27,19 @@ import java.util.Set;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"pl.coderslab.rentaapartment.repository"})
 public class AppConfig {
+//
+//    @Bean(name = "multipartResolver")
+//    public CommonsMultipartResolver multipartResolver() {
+//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+//        multipartResolver.setMaxUploadSize(20000000);
+//        return multipartResolver;
+//    }
+
+//    @Bean
+//    public StandardServletMultipartResolver multipartResolver() {
+//        return new StandardServletMultipartResolver();
+//    }
+
 
     @Bean(name="localeResolver")
     public LocaleContextResolver getLocaleContextResolver() {
@@ -55,6 +68,8 @@ public class AppConfig {
         converters.add(new UserConverter());
         converters.add(new ApartmentConverter());
         converters.add(new AddressConverter());
+        converters.add(new ImageConverter());
+        converters.add(new MessageConverter());
         return converters;
     }
     @Bean(name = "conversionService")

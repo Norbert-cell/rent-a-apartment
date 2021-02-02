@@ -9,15 +9,7 @@
             Opis: <h3>${apartment.content}</h3><br/>
             <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a><br/>
             Najemca: <a href="<c:url value="/app/user/details/${apartment.tenantUser.id}"/>">
-            <c:choose>
-                <c:when test="${apartment.tenantUser.firstName != null}">
-                    ${apartment.tenantUser.fullName}
-                </c:when>
-                <c:otherwise>
-                    ${apartment.tenantUser.firmName}
-                </c:otherwise>
-            </c:choose>
-        </a><br/>
+            ${apartment.tenantUser.fullName}</a><br/>
         </c:forEach>
     </c:when>
     <c:otherwise>
