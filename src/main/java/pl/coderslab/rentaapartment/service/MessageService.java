@@ -12,10 +12,13 @@ import pl.coderslab.rentaapartment.repository.ApartmentRepository;
 import pl.coderslab.rentaapartment.repository.MessageRepository;
 import pl.coderslab.rentaapartment.repository.UserRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -24,6 +27,8 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final ApartmentRepository apartmentRepository;
     private final UserRepository userRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public MessageService(MessageRepository messageRepository, ApartmentRepository apartmentRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
@@ -31,18 +36,15 @@ public class MessageService {
         this.userRepository = userRepository;
     }
 
-
-    public User getOwnerUserFromApartment(long apartmentId) {
-        Optional<Apartment> apartment = apartmentRepository.findById(apartmentId);
-        return apartment.stream().map(Apartment::getOwnerUser).findFirst().orElse(new User());
+    public User getOwnerUserOfApartmentById(long apartmentId) {
+        long ownerUserId = apartmentRepository.findById(apartmentId).orElse(new Apartment()).getOwnerUser().getId();
+        return userRepository.findById(ownerUserId).orElse(new User());
     }
 
-    public void saveMessage(Message message, String senderUserName) {
-        message.setSenderUser(userRepository.findByUserName(senderUserName).orElse(new User()).getId());
-        message.setDateOfSendMsg(LocalDateTime.now());
-        message.setRead(false);
+    public void saveMessage(Message message) {
         messageRepository.save(message);
     }
+
 
     public boolean findMyrentedApartmentByUserNameAndApartmentId(String name, long apartmentId) throws NotFoundException {
         User userToCheckIsrentedApartmentbyhim = userRepository.findByUserName(name).orElseThrow(() -> new NotFoundException("Nie ma uzytkownika"));
@@ -54,12 +56,95 @@ public class MessageService {
         return apartmentRepository.findById(apartmentId).stream().map(Apartment::getTitle).findFirst().orElse("Nieznany tytul");
     }
 
-    public List<Message> findAllMessagesByTypeAndReceiverUser(MessageType type, long receiveUser) {
-        return messageRepository.findAllByTypeAndReceiverUser(type,receiveUser);
+    public User getPrincipalUser(String name) {
+        return userRepository.findByUserName(name).orElse(new User());
     }
 
-    public List<Message> findAllMessagesByUserSenderIdToReceiverUser(long userId, long receiverUserId) {
-        return messageRepository.findAllBySenderUserAndReceiverUser(userId,receiverUserId);
+    public Set<User> getAllSenderUserByPrincipalAndType(String name, MessageType messageType) {
+        int type = 0;
+        if (messageType.equals(MessageType.NORMAL_MESSAGE)) {
+            type = 1;
+        }
+        User principalUser = userRepository.findByUserName(name).orElse(new User());
+        List<Message> allMessagesBeetweenUser = messageRepository.findAllMessagesByUserIdAndType(principalUser.getId(), type);
+        Set<User> senderUsers = new HashSet<>();
+        for (Message message : allMessagesBeetweenUser) {
+            List<User> users = message.getUsers();
+            for (User user : users) {
+                if (user.getId() != principalUser.getId()) {
+                    senderUsers.add(user);
+                }
+            }
+        }
+        return senderUsers;
+    }
+
+    public Set<Message> getMessagesBetweenUsersBySenderAndReceiver(long senderId, String name, MessageType messageType) {
+
+        User principalUser = userRepository.findByUserName(name).orElse(new User());
+        List<Long> messagesByPrincipal = messageRepository.getMessagesIdByUser(principalUser.getId());
+        List<Long> messageBySender = messageRepository.getMessagesIdByUser(senderId);
+
+        List<Long> finalLong = new ArrayList<>();
+
+        for (Long aLong : messageBySender) {
+            for (Long aLong1 : messagesByPrincipal) {
+                if (aLong == aLong1) {
+                    finalLong.add(aLong);
+                }
+            }
+        }
+
+        long messageId = finalLong.get(0);
+
+        List<Message> messagesBetweenUser = messageRepository.findAllById(messageId);
+
+        List<Message> messages;
+
+        long apartmentId = getApartmentIdByMessages(messagesBetweenUser);
+        if (messageType.equals(MessageType.FAULT_MESSAGE)) {
+            messages = messageRepository.findAllByMsgAboutApartmentIdAndUsersAndTypeIsFault(senderId, apartmentId);
+        } else {
+            messages = messageRepository.findAllByMsgAboutApartmentIdAndUsersAndTypeIsNormal(senderId, apartmentId);
+        }
+
+        List<Message> finalMessage = new ArrayList<>();
+        for (Message message : messages) {
+            for (Long aLong : finalLong) {
+                if (message.getId() == aLong) {
+                    finalMessage.add(message);
+                }
+            }
+        }
+
+        Set<Message> collect = finalMessage.stream()
+                .collect(Collectors.toSet());
+
+        return collect;
+    }
+
+    public String getTitleMessages(Set<Message> messages) {
+        return messages.stream().map(Message::getTitle).findFirst().orElse("Brak tytulu");
+    }
+
+    public int getUnReadMessagesSizeByUserIdAndType(long id, MessageType messageType) {
+        int type = 0;
+        if (messageType.equals(MessageType.NORMAL_MESSAGE)) {
+            type = 1;
+        }
+        return messageRepository.countMessagesByReadIsFalseAndUsersIsAndTypeIs(id, type);
+    }
+
+    public void updateReadMessageWherePrincipalIsAndMessageId(String name, Set<Message> messages) {
+        User principalUser = userRepository.findByUserName(name).orElse(new User());
+        for (Message message : messages) {
+            for (User user : message.getUsers()) {
+                if (principalUser == user) {
+                    message.setRead(true);
+                }
+            }
+        }
+        messages.forEach(messageRepository::save);
     }
 
     public String getSenderUserFullNameByUserId(long userId) {
@@ -70,67 +155,37 @@ public class MessageService {
         return messageRepository.findById(messageId).orElse(new Message());
     }
 
-    public void updateReadMessage(Message msg) {
-        messageRepository.save(msg);
+    public long getApartmentIdByMessages(List<Message> messages) {
+        return messages.stream()
+                .map(Message::getMsgAboutApartmentId)
+                .findFirst().orElse(0L);
     }
 
-    public void saveReturnMessage(Message message) {
-        message.setDateOfSendMsg(LocalDateTime.now());
-        messageRepository.save(message);
+    public long getApartmentIdByMessagesSet(Set<Message> messages) {
+        return messages.stream()
+                .map(Message::getMsgAboutApartmentId)
+                .findFirst().orElse(0L);
     }
 
-//    public Set<Long> findAllSenderByReceiverUserName(String name) {
-//        long receiverUser = userRepository.findByUserName(name).orElse(new User()).getId();
-////        List<Message> allByReceiverUser = messageRepository.findAllByReceiverUser(receiverUser);
-////        return allByReceiverUser.stream().map(x->x.getSenderUser()).collect(Collectors.toSet());
-//    }
-//
-//    public List<Message> findAllByReceiverUserAndSenderUserAndType(String name, long userId, MessageType normalMessage) {
-//        long id = userRepository.findByUserName(name).orElse(new User()).getId();
-//        return messageRepository.findAllByReceiverUserAndSenderUserAndType(id,userId,normalMessage);
-//    }
-
-    public Set<User> getAllSenderMessagesForUserByReceiverAndType(String name, MessageType messageType) {
-        User user = userRepository.findByUserName(name).orElse(new User());
-        List<Message> allByReceiverUser = messageRepository.findAllByReceiverUserAndTypeOrderByDateOfSendMsgDesc(user.getId(), messageType);
-        Set<Long> senderIdList = allByReceiverUser.stream()
-                .map(Message::getSenderUser)
-                .collect(Collectors.toSet());
-        return senderIdList.stream()
-                .map(x -> userRepository.findById(x).orElse(new User()))
-                .collect(Collectors.toSet());
-    }
-
-    public List<Message> getMessagesBetweenUsersBySenderAndReceiverAndType(long senderId, String name, MessageType messageType) {
-        User receiverUser = userRepository.findByUserName(name).orElse(new User());
-        List<Message> messageByReceiver = messageRepository.findAllByReceiverUserAndSenderUserAndTypeOrderByDateOfSendMsgDesc(receiverUser.getId(), senderId, messageType);
-        List<Message> messageBySender = messageRepository.findAllBySenderUserAndReceiverUserAndTypeOrderByDateOfSendMsgDesc(receiverUser.getId(),senderId, messageType);
-
-        System.out.println(messageByReceiver);
-        System.out.println(messageBySender);
-        List<Message> concatAllMessages = new ArrayList<>();
-        concatAllMessages.addAll(messageByReceiver);
-        concatAllMessages.addAll(messageBySender);
-
-        concatAllMessages.sort(Comparator.comparing(Message::getDateOfSendMsg));
-        return concatAllMessages;
-    }
-
-    public void updateReadMessageWherePrincipalIsAndMessageId(String name, List<Message> messages) {
-        User user = userRepository.findByUserName(name).orElse(new User());
-        for (Message x : messages) {
-            if (x.getReceiverUser() == user.getId()) {
-                x.setRead(true);
-            }
+    public Message findMessageBetweenOwnerAndPrincipalByMsgAboutApartmentIdAndUsers(long msgAboutApartmentId, User ownerUserOfApartmentById, User principalUser) {
+        Message msg = messageRepository.findByMsgAboutApartmentIdAndUsers(msgAboutApartmentId, principalUser.getId(), ownerUserOfApartmentById.getId());
+        if (msg == null) {
+            return new Message();
         }
-        messages.forEach(messageRepository::save);
-
+        return msg;
     }
 
-    public int getUnReadMessagesSizeByUserIdAndType(long userId, MessageType messageType) {
-        List<Message> msg = messageRepository.findAllByReceiverUserAndType(userId, messageType);
-        return (int) msg.stream()
-                .filter(x -> !x.isRead())
-                .count();
+    public List<Message> convertSetToListAndSortByDate(Set<Message> messages) {
+        List<Message> messageList = messages.stream()
+                .collect(Collectors.toList());
+        messageList.sort(Comparator.comparing(Message::getDateOfSendMsg));
+        return messageList;
     }
+
+    public List<User> convertSetToListAndSortByRead(Set<User> senderUser) {
+        List<User> collect = senderUser.stream().collect(Collectors.toList());
+        collect.sort(Comparator.comparing(User::getId));
+        return collect;
+    }
+
 }

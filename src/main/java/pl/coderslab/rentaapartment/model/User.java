@@ -87,7 +87,6 @@ public class User implements UserDetails {
         return this.firstName +" " + this.lastName;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.getAuthority()));

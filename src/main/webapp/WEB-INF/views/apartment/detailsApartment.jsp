@@ -23,7 +23,7 @@
     Adres: <h3>${apartment.address.fullStreet}</h3><br/>
         </span>
     Najemca: <h3>${apartment.tenantUser.fullName}</h3>
-    <a href="<c:url value="/app/message/send/${apartment.ownerUser.id}" />">Wyslij wiadomosc do wlasciciela</a><br/>
+    <a href="<c:url value="/app/message/send/${apartment.id}" />">Wyslij wiadomosc do wlasciciela</a><br/>
     <h3>Mapa google</h3>
     <div id="map"></div>
 <iframe width="470" height="295" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" id="gmap_canvas" src="https://maps.google.com/maps?width=470&height=295&hl=en&q=${apartment.address.fullStreet},${apartment.address.city}&amp;t=&amp;z=12&amp;ie=UTF8&amp;iwloc=B&amp;output=embed">

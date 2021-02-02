@@ -1,6 +1,9 @@
 package pl.coderslab.rentaapartment.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,10 +13,10 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String content;
-    private Long senderUser;
-    private Long receiverUser;
     private LocalDateTime dateOfSendMsg;
     private double estimatedPrice;
     private Long msgAboutApartmentId;
@@ -86,22 +89,6 @@ public class Message {
         this.content = content;
     }
 
-    public Long getSenderUser() {
-        return senderUser;
-    }
-
-    public void setSenderUser(Long senderUser) {
-        this.senderUser = senderUser;
-    }
-
-    public Long getReceiverUser() {
-        return receiverUser;
-    }
-
-    public void setReceiverUser(Long receiverUser) {
-        this.receiverUser = receiverUser;
-    }
-
     public LocalDateTime getDateOfSendMsg() {
         return dateOfSendMsg;
     }
@@ -116,8 +103,6 @@ public class Message {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", senderUser=" + senderUser +
-                ", receiverUser=" + receiverUser +
                 ", dateOfSendMsg=" + dateOfSendMsg +
                 ", estimatedPrice=" + estimatedPrice +
                 ", msgAboutApartmentId=" + msgAboutApartmentId +

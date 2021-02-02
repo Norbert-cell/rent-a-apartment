@@ -84,10 +84,10 @@ public class UserController {
     @GetMapping("/rented")
     public String rentedApartment(Principal principal, Model model) throws NotFoundException {
         User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
-        model.addAttribute("apartment", user.getRentedHouse());
         if(user.getRentedHouse() == null){
-        model.addAttribute("apartmentDoesntExist", false);
+        model.addAttribute("apartmentDoesntExist", true);
         }
+        model.addAttribute("apartment", user.getRentedHouse());
         return "dashboard/myRentedApartment";
     }
 
@@ -99,14 +99,15 @@ public class UserController {
 
         model.addAttribute("apartments",allApartmentsUser.size());
 
-        model.addAttribute("rentedApartments", allApartmentsUser.stream().filter(x ->x.getTenantUser() != null).count());
+        model.addAttribute("rentedApartments", countBillsService.getMyRentedApartmentsCount(allApartmentsUser));
 
-        model.addAttribute("earningFromRentedApartment", countBillsService.countEarningFromRentedApartment(allApartmentsUser.stream()
-        .filter(x->x.getTenantUser() != null).collect(Collectors.toList())));
+        model.addAttribute("earningFromRentedApartment", countBillsService.countEarningFromRentedApartment(allApartmentsUser));
 
         model.addAttribute("costsApartments",countBillsService.fullCostsUpKeepApartments(allApartmentsUser));
 
         model.addAttribute("costsUnrentedApartments", countBillsService.costsUnrentedApartments(allApartmentsUser) );
+
+        model.addAttribute("fault", countBillsService.getCostsFaultByApartments(allApartmentsUser));
         return "user/earning";
     }
 }

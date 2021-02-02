@@ -52,4 +52,5 @@ public class ApartmentService {
     public Apartment getOne(long id) {
         return apartmentRepository.getOne(id);
     }
+
 }

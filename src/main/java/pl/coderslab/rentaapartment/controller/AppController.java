@@ -54,7 +54,7 @@ public class AppController {
         model.addAttribute("listApartments",allByTenantUserIsNull.getContent());
         model.addAttribute("normalMessagesSize", normalMessages);
         model.addAttribute("faultMessagesSize", faultMessages);
-
+        model.addAttribute("userFullName", user.getFullName());
         return "dashboard/dashboard";
     }
 

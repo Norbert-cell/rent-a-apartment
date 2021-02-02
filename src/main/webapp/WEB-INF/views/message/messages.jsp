@@ -5,8 +5,7 @@
 </c:if>
 <c:forEach items="${senderUsers}" var="user">
   OD:  ${user.fullName}
-    <a href="/app/message/normal/${user.id}">Zobacz</a>
-
+    <a href="/app/message/normal/${user.id}">Zobacz</a><br/>
 </c:forEach>
 
 <a href="<c:url value="/app/1" />">Wroc</a><br/>

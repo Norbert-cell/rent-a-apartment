@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+<b><h3>${userFullName}</h3></b>
 <a href="<c:url value="/app/user/edit"/>">Edytuj uzytkownika</a>
 <a href="<c:url value="/app/apartment/add-apartment"/>">Dodaj mieszkanie</a>
 <a href="<c:url value="/app/user/auctions/1" />">Moje aukcje</a><br/>
@@ -22,7 +23,7 @@
 <c:choose>
 <c:when test="${normalMessagesSize>0}">
     <b><a href="<c:url value="/app/message/normal" />">Wiadomosci</a></b><br/>
-    <b>Nie przeczytanych wiadomosci: ${messagesSize}</b><br/>
+    <b>Nie przeczytanych wiadomosci: ${normalMessagesSize}</b><br/>
 </c:when>
     <c:otherwise>
 <a href="<c:url value="/app/message/normal" />">Wiadomosci</a><br/>
@@ -46,7 +47,7 @@
     Opis: <h3>${apartment.content}</h3><br/>
     Cena: <h3>${apartment.price}</h3>
     <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a><br/>
-    <a href="<c:url value="/app/message/rent/${apartment.id}"/>">Zadaj pytanie sprzedajacemu</a><br/>
+    <a href="<c:url value="/app/message/send/${apartment.id}"/>">Zadaj pytanie sprzedajacemu</a><br/>
 </c:forEach>
     </c:when>
     <c:otherwise>

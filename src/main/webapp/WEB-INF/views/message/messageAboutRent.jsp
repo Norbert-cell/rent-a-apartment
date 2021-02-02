@@ -4,15 +4,13 @@
 
 
 <h3>Wiadomosc do: ${ownerUserFullName}</h3><br/>
-<form:form modelAttribute="message" method="post" action="/app/message/rent">
+<form:form modelAttribute="message" method="post" action="/app/message/send">
     <form:hidden path="msgAboutApartmentId"/>
-    <form:hidden path="receiverUser"/>
-    <form:hidden path="senderUser"/>
     <form:hidden path="title"/>
     <form:hidden path="type"/>
-    <form:hidden path="msgAboutApartmentId"/>
+    <form:hidden path="users"/>
     Tytuł:${apartmentTitle}<br/>
-    Opis: <form:input path="content"/><br/>
+    Opis: <form:textarea cols="20" rows="45" path="content"/><br/>
     <form:errors path="content"/>
     Sugerowana cena:<form:input path="estimatedPrice"/><br/>
     <form:errors path="estimatedPrice"/>
