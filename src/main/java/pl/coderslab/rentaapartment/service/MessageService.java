@@ -1,7 +1,5 @@
 package pl.coderslab.rentaapartment.service;
 
-import javassist.NotFoundException;
-import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.rentaapartment.model.Apartment;
@@ -12,13 +10,7 @@ import pl.coderslab.rentaapartment.repository.ApartmentRepository;
 import pl.coderslab.rentaapartment.repository.MessageRepository;
 import pl.coderslab.rentaapartment.repository.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -27,8 +19,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final ApartmentRepository apartmentRepository;
     private final UserRepository userRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
+
 
     public MessageService(MessageRepository messageRepository, ApartmentRepository apartmentRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
@@ -91,12 +82,7 @@ public class MessageService {
     }
 
     public int getUnReadMessagesSizeByUserIdAndType(long id, MessageType messageType) {
-        int type = 0;
-        if (messageType.equals(MessageType.NORMAL)){
-            type =1;
-        }
-
-        return messageRepository.countMessagesByReadIsFalseAndUsersIsAndTypeIs(id, type);
+        return messageRepository.countMessagesByReadIsFalseAndUsersIsAndTypeIs(id, messageType);
     }
 
     public void updateReadMessageWherePrincipalIsAndMessagesIs(String name, List<Message> messages) {
@@ -125,5 +111,11 @@ public class MessageService {
     }
 
 
-
+    public boolean checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(long principalId, long senderId, long apartmentId) {
+        int i = messageRepository.checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(principalId, senderId, apartmentId);
+        if (i>0){
+            return true;
+        }
+        return false;
+    }
 }

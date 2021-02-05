@@ -18,6 +18,7 @@ import pl.coderslab.rentaapartment.validator.EditUserValidationGroup;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/app/user")
@@ -26,6 +27,7 @@ public class UserController {
     private final UserService userService;
     private final CountBillsService countBillsService;
 
+
     public UserController(UserService userService, CountBillsService countBillsService) {
         this.userService = userService;
         this.countBillsService = countBillsService;
@@ -33,10 +35,13 @@ public class UserController {
 
     @GetMapping("/details/{id}")
     public String userDetails(@PathVariable long id, Model model){
-        Role user = userService.findById(id).map(User::getRole).orElseThrow();
-        User optionalUser = userService.findById(id).orElse(new User());
+        User optionalUser = userService.findById(id).orElse(null);
+        if (optionalUser == null) {
+            return "user/userDoesntExistError";
+        }
+        Role role = optionalUser.getRole();
         model.addAttribute("user",optionalUser);
-        if(user.getAuthority().equals("ROLE_FIRM")){
+        if(role.equals(Role.ROLE_FIRM)){
             return "user/firmDetails";
         }
     return "user/userDetails";
@@ -66,8 +71,11 @@ public class UserController {
 
     @GetMapping("/edit")
     public String editUser(Model model, Principal principal) throws NotFoundException {
-        User byUserName = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
-        model.addAttribute("user",userService.findById(byUserName.getId()));
+        User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
+        if (user.getRole().equals(Role.ROLE_USER)){
+            model.addAttribute("roleUser", true);
+        }
+        model.addAttribute("user",user);
         return "user/edit";
     }
 

@@ -20,6 +20,7 @@ public class Message {
     private LocalDateTime dateOfSendMsg;
     private double estimatedPrice;
     private Long msgAboutApartmentId;
+    @Enumerated(EnumType.STRING)
     private MessageType type;
     private boolean isRead;
     private long senderUserId;

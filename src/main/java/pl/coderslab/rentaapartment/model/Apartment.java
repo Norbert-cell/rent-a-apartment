@@ -34,12 +34,12 @@ public class Apartment {
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean rented;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Valid
     private Address address;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User ownerUser;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User tenantUser;
     @Min(value = 1, groups = {ApartmentValidationGroup.class})
     private Double myBills;

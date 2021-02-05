@@ -27,19 +27,6 @@ import java.util.Set;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"pl.coderslab.rentaapartment.repository"})
 public class AppConfig {
-//
-//    @Bean(name = "multipartResolver")
-//    public CommonsMultipartResolver multipartResolver() {
-//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-//        multipartResolver.setMaxUploadSize(20000000);
-//        return multipartResolver;
-//    }
-
-//    @Bean
-//    public StandardServletMultipartResolver multipartResolver() {
-//        return new StandardServletMultipartResolver();
-//    }
-
 
     @Bean(name="localeResolver")
     public LocaleContextResolver getLocaleContextResolver() {

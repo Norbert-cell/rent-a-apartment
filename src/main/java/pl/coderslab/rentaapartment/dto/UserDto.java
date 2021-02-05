@@ -1,59 +1,19 @@
 package pl.coderslab.rentaapartment.dto;
 
-import org.hibernate.validator.constraints.pl.NIP;
-import org.hibernate.validator.constraints.pl.REGON;
 import pl.coderslab.rentaapartment.model.Role;
-import pl.coderslab.rentaapartment.validator.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public class UserDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @NotBlank(groups = {FirmValidationGroup.class, UserValidationGroup.class})
-    @UniqueEmail(groups = {FirmValidationGroup.class, UserValidationGroup.class})
-    @Column(name = "email")
-    @Pattern(regexp = "[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.([a-zA-Z]{2,}){1}",
-            groups = {FirmValidationGroup.class, UserValidationGroup.class})
     private String userName;
-
-    @NotBlank(groups = {UserValidationGroup.class, EditUserValidationGroup.class})
-    @Column(name = "firstName")
-    @Pattern(regexp = "^[a-zA-Z]{2,15}$", groups = {UserValidationGroup.class})
     private String firstName;
-
-    @NotBlank(groups = {FirmValidationGroup.class, EditFirmValidationGroup.class})
     private String firmName;
-
-    @NotBlank(groups = {UserValidationGroup.class})
-    @Column(name = "lastName")
-    @Pattern(regexp = "^[a-zA-Z]{2,15}$",groups = {UserValidationGroup.class})
     private String lastName;
-
-    @NotBlank(groups = {FirmValidationGroup.class, UserValidationGroup.class})
-    @Size(min = 3, max = 48,groups = {FirmValidationGroup.class, UserValidationGroup.class})
-    private String password;
-
     private LocalDateTime created;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
     private Role role;
-
-    @NotBlank(groups = {FirmValidationGroup.class})
-    @NIP(groups = {FirmValidationGroup.class})
     private String nip;
-
-    @REGON(groups = {FirmValidationGroup.class})
-    @NotBlank(groups =
-            FirmValidationGroup.class)
     private String regon;
 
     public long getId() {
@@ -76,9 +36,6 @@ public class UserDto {
         return lastName;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public LocalDateTime getCreated() {
         return created;
@@ -94,5 +51,41 @@ public class UserDto {
 
     public String getRegon() {
         return regon;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    public void setRegon(String regon) {
+        this.regon = regon;
     }
 }

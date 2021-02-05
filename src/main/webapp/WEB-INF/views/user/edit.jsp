@@ -11,8 +11,8 @@
     <form:hidden path="id"/> <br/>
     <form:hidden path="role"/><br/>
     <form:hidden path="created"/><br/>
-    <form:hidden path="password"/><br/>
     <form:hidden path="userName"/><br/>
+    <form:hidden path="password"/><br/>
     <form:hidden path="isEnabled"/><br/>
     Imie: <form:input path="firstName"/> <br/>
     <form:errors path="firstName"/><br/>

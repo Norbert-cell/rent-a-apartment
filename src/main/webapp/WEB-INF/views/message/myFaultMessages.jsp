@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 Tytul: ${messageTitle}<br/>
+Szacowany koszt: ${estimatedPrice}PLN<br/>
     <c:forEach items="${messages}" var="message">
         ${message.dateOfSendMsg}
         ${message.content}<br/>

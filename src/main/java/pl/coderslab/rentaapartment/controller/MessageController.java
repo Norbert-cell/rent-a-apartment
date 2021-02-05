@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -33,6 +34,11 @@ public class MessageController {
     public String sendMsg(@RequestParam("type") MessageType messageType ,@PathVariable long apartmentId,
                                 @PathVariable long senderId, Model model, Principal principal){
         User principalUser = messageService.getPrincipalUser(principal.getName());
+
+        boolean checkContact = messageService.checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(principalUser.getId(), senderId, apartmentId);
+        if (!checkContact){
+            return "redirect:/app/1";
+        }
 
         Message message = new Message();
         message.setType(messageType);
@@ -78,10 +84,14 @@ public class MessageController {
 
         String title = messageService.getTitleMessages(messages);
 
+        Double estimatedPrice = messages.stream()
+                .map(Message::getEstimatedPrice)
+                .findFirst().orElse(0.0);
 
         model.addAttribute("userFullName",messageService.getSenderUserFullNameByUserId(senderId));
         model.addAttribute("messageTitle", title);
         model.addAttribute("messages",messages);
+        model.addAttribute("estimatedPrice",estimatedPrice);
         model.addAttribute("msgAboutApartmentId",messageService.getApartmentIdByMessages(messages));
         model.addAttribute("senderId", senderId);
         if (messageType.equals(MessageType.NORMAL)){

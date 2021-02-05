@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <head>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <b><h3>${userFullName}</h3></b>
@@ -60,5 +60,5 @@
                 <a href="/app/${page+1}">${page+1}</a>
             </c:forEach>
 </c:if>
-<script defer src="../js/image.js"></script>
+<script defer src="${pageContext.request.contextPath}/js/imagesDashboard.js"></script>
 </body>

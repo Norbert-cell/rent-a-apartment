@@ -2,6 +2,9 @@ const ulElement = document.querySelector('div ul');
 const liElements = ulElement.querySelectorAll('li');
 const body = document.querySelector('body');
 
+window.addEventListener('DOMContentLoaded', evt => {
+evt.preventDefault()
+
 liElements.forEach(function (li) {
     li.addEventListener('click', function () {
         const divElement = document.createElement('div');
@@ -24,4 +27,5 @@ liElements.forEach(function (li) {
             body.removeChild(divElement);
         })
     })
+})
 })

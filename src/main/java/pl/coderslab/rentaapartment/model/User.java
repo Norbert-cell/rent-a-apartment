@@ -37,9 +37,9 @@ public class User implements UserDetails {
     @NotBlank(groups = {FirmValidationGroup.class, EditFirmValidationGroup.class})
     private String firmName;
 
-    @NotBlank(groups = {UserValidationGroup.class})
+    @NotBlank(groups = {UserValidationGroup.class,EditUserValidationGroup.class})
     @Column(name = "lastName")
-    @Pattern(regexp = "^[a-zA-Z]{2,15}$",groups = {UserValidationGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]{2,15}$",groups = {UserValidationGroup.class,EditUserValidationGroup.class})
     private String lastName;
 
     @NotBlank(groups = {FirmValidationGroup.class, UserValidationGroup.class})
@@ -52,10 +52,10 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "tenantUser")
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "tenantUser", cascade = CascadeType.REMOVE)
     private Apartment rentedHouse;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerUser")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "ownerUser", cascade = CascadeType.REMOVE)
     private List<Apartment> auctions;
 
     @NotBlank(groups = {FirmValidationGroup.class})
