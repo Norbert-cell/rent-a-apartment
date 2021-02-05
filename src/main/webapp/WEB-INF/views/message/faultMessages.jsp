@@ -5,10 +5,10 @@
 <c:if test="${noMessages==0}">
     Brak wiadomosci
 </c:if>
-<c:forEach items="${faultMessages}" var="sender">
+<c:forEach items="${senderUsers}" var="sender">
 
     Od:${sender.fullName}
-    <a href="/app/message/fault/${sender.id}">Zobacz</a>
+    <a href="/app/message/msg/${sender.id}?type=FAULT">Zobacz</a>
 </c:forEach>
 
 

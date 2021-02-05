@@ -21,7 +21,7 @@
 <form:form method="post" modelAttribute="apartment" enctype="multipart/form-data">
     Tytuł: <form:input path="title"/> <br/>
     <form:errors path="title"/><br/>
-    Opis: <form:textarea cols="20" rows="45" path="content"/> <br/>
+    Opis: <form:textarea cols="45" rows="20" path="content"/> <br/>
     <form:errors path="content"/><br/>
     Powierzchnia(m2): <form:input path="apartmentArea"/><br/>
     <form:errors path="apartmentArea"/><br/>

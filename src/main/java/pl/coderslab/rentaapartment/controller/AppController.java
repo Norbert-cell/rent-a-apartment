@@ -19,8 +19,6 @@ import pl.coderslab.rentaapartment.service.UserService;
 
 import java.security.Principal;
 
-import static pl.coderslab.rentaapartment.model.MessageType.FAULT_MESSAGE;
-import static pl.coderslab.rentaapartment.model.MessageType.NORMAL_MESSAGE;
 
 
 @Controller
@@ -41,8 +39,8 @@ public class AppController {
     @GetMapping("/{pageId}")
     public String dashboard(@PathVariable int pageId, Model model, Principal principal) throws NotFoundException {
         User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
-        int normalMessages = messageService.getUnReadMessagesSizeByUserIdAndType(user.getId(), NORMAL_MESSAGE);
-        int faultMessages = messageService.getUnReadMessagesSizeByUserIdAndType(user.getId(),FAULT_MESSAGE);
+        int normalMessages = messageService.getUnReadMessagesSizeByUserIdAndType(user.getId(), MessageType.NORMAL);
+        int faultMessages = messageService.getUnReadMessagesSizeByUserIdAndType(user.getId(),MessageType.FAULT);
         Role authority = user.getRole();
         if(authority.equals(Role.ROLE_ADMIN)){
             model.addAttribute("admin", true);
@@ -52,6 +50,7 @@ public class AppController {
         Page<Apartment> allByTenantUserIsNull = apartmentService.findAllByTenantUserIsNull(paging);
         model.addAttribute("totalPages", allByTenantUserIsNull.getTotalPages());
         model.addAttribute("listApartments",allByTenantUserIsNull.getContent());
+        model.addAttribute("senderId",user.getId());
         model.addAttribute("normalMessagesSize", normalMessages);
         model.addAttribute("faultMessagesSize", faultMessages);
         model.addAttribute("userFullName", user.getFullName());

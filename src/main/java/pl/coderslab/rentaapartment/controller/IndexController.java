@@ -119,7 +119,6 @@ public class IndexController {
         Token token = tokenRepository.findByValue(value).orElseThrow(()-> new RuntimeException("Nie ma takiego tokena"));
         User user = token.getUser();
         user.setEnabled(true);
-        user.setAccountNonLocked(true);
         userService.saveUser(user);
         tokenRepository.delete(token);
         return "redirect:/login";

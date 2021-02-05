@@ -78,9 +78,11 @@ public class ApartmentController {
     }
 
     @GetMapping("/details/{id}")
-    public String detailsApartment(@PathVariable long id, Model model) throws NotFoundException {
+    public String detailsApartment(@PathVariable long id, Model model, Principal principal) throws NotFoundException {
+        long userId = userService.findByUserName(principal.getName()).orElse(new User()).getId();
         Apartment apartment = apartmentService.findById(id).orElseThrow(()->new NotFoundException("Nie znaleziono"));
         model.addAttribute("apartment", apartment);
+        model.addAttribute("senderId",userId);
         return "apartment/detailsApartment";
     }
 

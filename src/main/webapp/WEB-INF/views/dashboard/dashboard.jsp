@@ -13,20 +13,20 @@
 <a href="<c:url value="/app/user/earning" />">Zarobki</a><br/>
 <c:choose>
     <c:when test="${faultMessagesSize>0}">
-<b><a href="<c:url value="/app/message/fault" />">Zgloszone usterki</a></b><br/>
+<b><a href="<c:url value="/app/message/msg?type=FAULT" />">Zgloszone usterki</a></b><br/>
         <b>Zgloszone usterki: ${faultMessagesSize}</b><br/>
     </c:when>
     <c:otherwise>
-        <a href="<c:url value="/app/message/fault" />">Zgloszone usterki</a><br/>
+        <a href="<c:url value="/app/message/msg?type=FAULT" />">Zgloszone usterki</a><br/>
     </c:otherwise>
 </c:choose>
 <c:choose>
 <c:when test="${normalMessagesSize>0}">
-    <b><a href="<c:url value="/app/message/normal" />">Wiadomosci</a></b><br/>
+    <b><a href="<c:url value="/app/message/msg?type=NORMAL" />">Wiadomosci</a></b><br/>
     <b>Nie przeczytanych wiadomosci: ${normalMessagesSize}</b><br/>
 </c:when>
     <c:otherwise>
-<a href="<c:url value="/app/message/normal" />">Wiadomosci</a><br/>
+<a href="<c:url value="/app/message/msg?type=NORMAL" />">Wiadomosci</a><br/>
     </c:otherwise>
 </c:choose>
 <c:if test="${admin}">
@@ -47,7 +47,7 @@
     Opis: <h3>${apartment.content}</h3><br/>
     Cena: <h3>${apartment.price}</h3>
     <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a><br/>
-    <a href="<c:url value="/app/message/send/${apartment.id}"/>">Zadaj pytanie sprzedajacemu</a><br/>
+    <a href="<c:url value="/app/message/send/${apartment.id}/${apartment.ownerUser.id}?type=NORMAL"/>">Zadaj pytanie sprzedajacemu</a><br/>
 </c:forEach>
     </c:when>
     <c:otherwise>

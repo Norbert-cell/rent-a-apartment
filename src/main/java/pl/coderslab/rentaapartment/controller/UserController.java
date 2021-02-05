@@ -18,7 +18,6 @@ import pl.coderslab.rentaapartment.validator.EditUserValidationGroup;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/app/user")
@@ -84,6 +83,7 @@ public class UserController {
     @GetMapping("/rented")
     public String rentedApartment(Principal principal, Model model) throws NotFoundException {
         User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
+        model.addAttribute("senderId",user.getId());
         if(user.getRentedHouse() == null){
         model.addAttribute("apartmentDoesntExist", true);
         }

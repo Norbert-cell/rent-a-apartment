@@ -22,15 +22,23 @@ public class Message {
     private Long msgAboutApartmentId;
     private MessageType type;
     private boolean isRead;
-    @ManyToMany
-    private List<User> users;
+    private long senderUserId;
+    private long receiverUserId;
 
-    public List<User> getUsers() {
-        return users;
+    public long getSenderUserId() {
+        return senderUserId;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setSenderUserId(long senderUserId) {
+        this.senderUserId = senderUserId;
+    }
+
+    public long getReceiverUserId() {
+        return receiverUserId;
+    }
+
+    public void setReceiverUserId(long receiverUserId) {
+        this.receiverUserId = receiverUserId;
     }
 
     public boolean isRead() {

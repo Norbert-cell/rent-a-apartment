@@ -8,9 +8,10 @@
     <form:hidden path="msgAboutApartmentId"/>
     <form:hidden path="title"/>
     <form:hidden path="type"/>
-    <form:hidden path="users"/>
-    Tytuł:${apartmentTitle}<br/>
-    Opis: <form:textarea cols="20" rows="45" path="content"/><br/>
+    <form:hidden path="senderUserId"/>
+    <form:hidden path="receiverUserId"/>
+    Tytuł:${message.title}<br/>
+    Wiadomosc: <form:textarea cols="45" rows="15a" path="content"/><br/>
     <form:errors path="content"/>
     Sugerowana cena:<form:input path="estimatedPrice"/><br/>
     <form:errors path="estimatedPrice"/>

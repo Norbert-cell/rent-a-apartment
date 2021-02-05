@@ -15,7 +15,7 @@
     Adres: <h3>${apartment.address.fullStreet}</h3><br/>
     Najemca:${apartment.tenantUser.fullName}<br/>
 
-<a href="<c:url value="/app/message/report/${apartment.ownerUser.id}"/>">Zglos usterke</a>
+<a href="<c:url value="/app/message/send/${apartment.id}/${apartment.ownerUser.id}?type=FAULT"/>">Zglos usterke</a>
     </c:otherwise>
 </c:choose>
 <a href="<c:url value="/app/1"/>">Wroc</a>
