@@ -53,4 +53,7 @@ public class ApartmentService {
         return apartmentRepository.getOne(id);
     }
 
+    public List<Apartment> findAll() {
+        return apartmentRepository.findAll();
+    }
 }

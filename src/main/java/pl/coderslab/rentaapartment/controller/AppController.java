@@ -29,6 +29,7 @@ public class AppController {
     private UserService userService;
     private MessageService messageService;
 
+
     public AppController(ApartmentService apartmentService, UserService userService, MessageService messageService) {
         this.apartmentService = apartmentService;
         this.userService = userService;
