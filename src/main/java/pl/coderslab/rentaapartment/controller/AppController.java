@@ -28,6 +28,7 @@ public class AppController {
     private ApartmentService apartmentService;
     private UserService userService;
     private MessageService messageService;
+    final int PAGE_SIZE =5;
 
 
     public AppController(ApartmentService apartmentService, UserService userService, MessageService messageService) {
@@ -46,8 +47,7 @@ public class AppController {
         if(authority.equals(Role.ROLE_ADMIN)){
             model.addAttribute("admin", true);
         }
-        final int pageSize =5;
-        Pageable paging = PageRequest.of(pageId-1,pageSize);
+        Pageable paging = PageRequest.of(pageId-1,PAGE_SIZE);
         Page<Apartment> allByTenantUserIsNull = apartmentService.findAllByTenantUserIsNull(paging);
         model.addAttribute("totalPages", allByTenantUserIsNull.getTotalPages());
         model.addAttribute("listApartments",allByTenantUserIsNull.getContent());

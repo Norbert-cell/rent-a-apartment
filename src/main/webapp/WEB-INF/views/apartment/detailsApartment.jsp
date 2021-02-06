@@ -22,7 +22,9 @@
     <span id="addressForMap">
     Adres: <h3>${apartment.address.fullStreet}</h3><br/>
         </span>
+<c:if test="${apartment.tenantUser.id}">
     Najemca: <h3><a href="<c:url value="/app/user/details/${apartment.tenantUser.id}" />">${apartment.tenantUser.fullName}</a><br/></h3><br/>
+</c:if>
 <a href="<c:url value="/app/message/send/${apartment.id}/${apartment.ownerUser.id}?type=NORMAL" />">Wyslij wiadomosc do wlasciciela</a><br/>
 
     <h3>Mapa google</h3>

@@ -23,13 +23,13 @@ public class Apartment {
     @Size(min=20, max = 100000, groups ={ApartmentValidationGroup.class} )
     private String content;
     @NotNull(groups = {ApartmentValidationGroup.class})
-    @Min(value = 1,groups = {ApartmentValidationGroup.class})
+    @Min(value = 5,groups = {ApartmentValidationGroup.class}, message = "Minimum 5m2!")
     private int apartmentArea;
     @NotNull(groups = {ApartmentValidationGroup.class})
-    @Min(value = 1,groups = {ApartmentValidationGroup.class})
+    @Min(value = 1,groups = {ApartmentValidationGroup.class}, message = "Minimum 1 pokoj!")
     private int rooms;
-    @NotNull(groups = {ApartmentValidationGroup.class})
-    @Min(value = 1,groups = {ApartmentValidationGroup.class})
+    @NotNull(groups = {ApartmentValidationGroup.class}, message = "Podaj wartosc wieksza lub rowna 1PLN!" )
+    @Min(value = 1,groups = {ApartmentValidationGroup.class}, message = "Podaj wartosc wieksza lub rowna 1PLN!")
     private Double price;
     private LocalDateTime created;
     private LocalDateTime updated;
@@ -41,9 +41,10 @@ public class Apartment {
     private User ownerUser;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User tenantUser;
-    @Min(value = 1, groups = {ApartmentValidationGroup.class})
+    @Min(value = 1, groups = {ApartmentValidationGroup.class}, message = "Podaj koszty utrzymania mieszkania!")
     private Double myBills;
     @OneToMany(cascade = CascadeType.ALL)
+    @Valid
     private List<Image> images = new ArrayList<>();
 
     public List<Image> getImages() {

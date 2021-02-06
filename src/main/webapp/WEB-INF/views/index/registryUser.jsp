@@ -11,13 +11,13 @@
 <form:form method="post" modelAttribute="user" action="/registry-user">
     <form:hidden path="id"/> <br/>
     Email: <form:input path="userName"/> <br/>
-    <form:errors path="userName"/><br/>
+    <form:errors path="userName" cssStyle="color: red"/><br/>
     Imie: <form:input path="firstName"/> <br/>
-    <form:errors path="firstName"/><br/>
+    <form:errors path="firstName" cssStyle="color: red"/><br/>
     Nazwisko: <form:input path="lastName"/> <br/>
-    <form:errors path="lastName"/><br/>
+    <form:errors path="lastName" cssStyle="color: red"/><br/>
     Haslo: <form:password path="password"/><br/>
-    <form:errors path="password"/>
+    <form:errors path="password" cssStyle="color: red"/>
     <input type="submit" value="Wyslij">
 </form:form>
 

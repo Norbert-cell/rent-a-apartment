@@ -48,16 +48,17 @@
     <span id="dashboard">
     <h1>${apartment.title}</h1><br/>
         </span>
-    <span id="showHide">
+    <span id="content">
     <h3>${apartment.content}</h3><br/>
-        <button onclick="showHide()">Pokaz wiecej</button>
         </span>
     <span id="dashboard"><h1><b>${apartment.price}PLN</b></h1></span>
     <span id="dashboard">
     <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a>
     <a href="<c:url value="/app/message/send/${apartment.id}/${apartment.ownerUser.id}?type=NORMAL"/>">Zadaj pytanie sprzedajacemu</a><br/>
         </span>
-
+<div id="dashboard">
+  <b>  -----------------------------------------------------------------------</b>
+</div>
 </c:forEach>
     </c:when>
     <c:otherwise>
@@ -71,14 +72,5 @@
             </c:forEach>
 </c:if>
 <script defer src="${pageContext.request.contextPath}/js/imagesDashboard.js"></script>
-<script>
-    function showHide() {
-        var x = document.getElementById("showHide");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
+<script defer src="${pageContext.request.contextPath}/js/hideShowText.js"></script>
 </body>

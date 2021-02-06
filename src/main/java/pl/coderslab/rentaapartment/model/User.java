@@ -60,10 +60,10 @@ public class User implements UserDetails {
     private List<Apartment> auctions;
 
     @NotBlank(groups = {FirmValidationGroup.class})
-    @NIP(groups = {FirmValidationGroup.class})
+    @NIP(groups = {FirmValidationGroup.class}, message = "Nip powinien zawierac 10 cyfr")
     private String nip;
 
-    @REGON(groups = {FirmValidationGroup.class})
+    @REGON(groups = {FirmValidationGroup.class}, message = "Regon powinien zawierac 9 cyfr")
     @NotBlank(groups =
             FirmValidationGroup.class)
     private String regon;

@@ -14,8 +14,8 @@
 }
 
 .gallery li img {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
 }
 
 .fullScreen {
@@ -39,14 +39,15 @@
     height: calc(100% - 50px);
 }
 
-#showHide {
+
+#dashboard {
     width: 100%;
     padding: 50px 0;
     text-align: center;
     margin-top: 20px;
 }
 
-#dashboard {
+#content {
     width: 100%;
     padding: 50px 0;
     text-align: center;

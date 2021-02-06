@@ -11,7 +11,7 @@
     <form:hidden path="senderUserId"/>
     <form:hidden path="receiverUserId"/>
     Tytuł:${message.title}<br/>
-    Wiadomosc: <form:textarea cols="45" rows="15a" path="content"/><br/>
+    Wiadomosc: <form:textarea cols="45" rows="15" path="content"/><br/>
     <form:errors path="content"/>
     Sugerowana cena:<form:input path="estimatedPrice"/><br/>
     <form:errors path="estimatedPrice"/>
