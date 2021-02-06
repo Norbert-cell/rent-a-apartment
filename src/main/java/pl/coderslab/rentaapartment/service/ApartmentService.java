@@ -1,5 +1,6 @@
 package pl.coderslab.rentaapartment.service;
 
+import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,21 @@ public class ApartmentService {
         return apartmentRepository.getOne(id);
     }
 
-    public List<Apartment> findAll() {
-        return apartmentRepository.findAll();
+
+    public boolean checkIsOwnerUser(User user, long apartmentId) {
+        List<Apartment> auctions = user.getAuctions();
+        boolean isExist = auctions.stream()
+                .anyMatch(x -> x.getOwnerUser() == user);
+        return isExist;
+    }
+
+    public boolean remove(long apartmentId) throws NotFoundException {
+        Apartment apartment = apartmentRepository.findById(apartmentId).orElseThrow(() -> new NotFoundException("Nie znaleziono"));
+
+        if (apartment.getTenantUser() == null) {
+            apartmentRepository.delete(apartment);
+            return true;
+        }
+        return false;
     }
 }

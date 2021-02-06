@@ -21,8 +21,7 @@ window.addEventListener('DOMContentLoaded', evt => {
                 buttonElement.innerText = 'Close';
                 divElement.appendChild(buttonElement);
 
-                const button = document.querySelector('button');
-                button.addEventListener('click', function () {
+                buttonElement.addEventListener('click', function () {
                     body.removeChild(divElement);
                 })
             })

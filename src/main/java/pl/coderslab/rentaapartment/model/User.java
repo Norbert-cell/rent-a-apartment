@@ -31,10 +31,11 @@ public class User implements UserDetails {
 
     @NotBlank(groups = {UserValidationGroup.class, EditUserValidationGroup.class})
     @Column(name = "firstName")
-    @Pattern(regexp = "^[a-zA-Z]{2,15}$", groups = {UserValidationGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]{2,15}$", groups = {UserValidationGroup.class,EditUserValidationGroup.class})
     private String firstName;
 
     @NotBlank(groups = {FirmValidationGroup.class, EditFirmValidationGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]{2,30}$", groups = {FirmValidationGroup.class,EditFirmValidationGroup.class})
     private String firmName;
 
     @NotBlank(groups = {UserValidationGroup.class,EditUserValidationGroup.class})
@@ -79,6 +80,7 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.password = password;
     }
+
 
     public String getFullName(){
         if (role == Role.ROLE_FIRM){

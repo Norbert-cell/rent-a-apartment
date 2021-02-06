@@ -37,7 +37,7 @@ public class Apartment {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Valid
     private Address address;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private User ownerUser;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User tenantUser;

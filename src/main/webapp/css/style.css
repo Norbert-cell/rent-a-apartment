@@ -38,3 +38,17 @@
     width: auto;
     height: calc(100% - 50px);
 }
+
+#showHide {
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#dashboard {
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+    margin-top: 20px;
+}

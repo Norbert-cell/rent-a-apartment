@@ -121,7 +121,42 @@ public class ApartmentController {
 
     @GetMapping("/edit/error")
     public String get(Model model){
-        model.addAttribute("notOwnerUserError", "Nie mozesz edytowac apartamentu. Ten apartament nie nalezy do Ciebie!");
+        model.addAttribute("notOwnerUserError", "Ten apartament nie nalezy do Ciebie!");
         return "apartment/errorNotOwnerUser";
     }
+
+    @GetMapping("/remove/{apartmentId}")
+    public String removeApartment(@PathVariable long apartmentId, Principal principal, Model model) throws NotFoundException {
+        User user = userService.findByUserName(principal.getName()).orElse(new User());
+
+        boolean isOwnerUser = apartmentService.checkIsOwnerUser(user, apartmentId);
+        if (isOwnerUser){
+            boolean remove = apartmentService.remove(apartmentId);
+            if (!remove){
+                model.addAttribute("notOwnerUserError", "Ten apartament nie nalezy do Ciebie!");
+                return "apartment/failureRemove";
+            }
+            return "apartment/succesfullRemove";
+        }
+        return "apartment/errorNotOwnerUser";
+
+
+    }
+
+    @GetMapping("/termination/{apartmentId}")
+    public String terminationApartment(@PathVariable long apartmentId, Principal principal, Model model){
+        User user = userService.findByUserName(principal.getName()).orElse(new User());
+        boolean isOwnerUser = apartmentService.checkIsOwnerUser(user,apartmentId);
+
+        if (isOwnerUser){
+            Apartment apartment = apartmentService.findById(apartmentId).orElse(new Apartment());
+            apartment.setTenantUser(null);
+            apartment.setRented(false);
+            apartmentService.saveApartment(apartment);
+            return "redirect:/app/1";
+        }
+        model.addAttribute("notOwnerUserError", "Ten apartament nie nalezy do Ciebie!");
+        return "apartment/errorNotOwnerUser";
+    }
+
 }

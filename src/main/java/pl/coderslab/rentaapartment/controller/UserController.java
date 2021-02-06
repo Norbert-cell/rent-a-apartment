@@ -9,16 +9,18 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.rentaapartment.dto.UserDto;
+import pl.coderslab.rentaapartment.dtoConverter.UserDtoConverter;
 import pl.coderslab.rentaapartment.model.Apartment;
 import pl.coderslab.rentaapartment.model.Role;
 import pl.coderslab.rentaapartment.model.User;
 import pl.coderslab.rentaapartment.service.CountBillsService;
 import pl.coderslab.rentaapartment.service.UserService;
+import pl.coderslab.rentaapartment.validator.EditFirmValidationGroup;
 import pl.coderslab.rentaapartment.validator.EditUserValidationGroup;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/app/user")
@@ -26,11 +28,13 @@ public class UserController {
 
     private final UserService userService;
     private final CountBillsService countBillsService;
+    private final UserDtoConverter userDtoConverter;
 
 
-    public UserController(UserService userService, CountBillsService countBillsService) {
+    public UserController(UserService userService, CountBillsService countBillsService, UserDtoConverter userDtoConverter) {
         this.userService = userService;
         this.countBillsService = countBillsService;
+        this.userDtoConverter = userDtoConverter;
     }
 
     @GetMapping("/details/{id}")
@@ -39,8 +43,9 @@ public class UserController {
         if (optionalUser == null) {
             return "user/userDoesntExistError";
         }
-        Role role = optionalUser.getRole();
-        model.addAttribute("user",optionalUser);
+        UserDto userDto = userDtoConverter.entityToDto(optionalUser);
+        Role role = userDto.getRole();
+        model.addAttribute("user",userDto);
         if(role.equals(Role.ROLE_FIRM)){
             return "user/firmDetails";
         }
@@ -72,17 +77,26 @@ public class UserController {
     @GetMapping("/edit")
     public String editUser(Model model, Principal principal) throws NotFoundException {
         User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
-        if (user.getRole().equals(Role.ROLE_USER)){
-            model.addAttribute("roleUser", true);
-        }
         model.addAttribute("user",user);
-        return "user/edit";
+        if (user.getRole().equals(Role.ROLE_USER)){
+            return "user/edit";
+        }
+        return "user/editFirm";
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute @Validated({EditUserValidationGroup.class}) User user, BindingResult result){
+    public String editUser(@ModelAttribute @Validated({EditUserValidationGroup.class}) User user, BindingResult result){
         if(result.hasErrors()){
             return "user/edit";
+        }
+        userService.saveUser(user);
+        return "redirect:/app/1";
+    }
+
+    @PostMapping("/edit-firm")
+    public String editFirm(@ModelAttribute @Validated({EditFirmValidationGroup.class}) User user, BindingResult result){
+        if(result.hasErrors()){
+            return "user/editFirm";
         }
         userService.saveUser(user);
         return "redirect:/app/1";
@@ -91,7 +105,6 @@ public class UserController {
     @GetMapping("/rented")
     public String rentedApartment(Principal principal, Model model) throws NotFoundException {
         User user = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("Nie znaleziono"));
-        model.addAttribute("senderId",user.getId());
         if(user.getRentedHouse() == null){
         model.addAttribute("apartmentDoesntExist", true);
         }

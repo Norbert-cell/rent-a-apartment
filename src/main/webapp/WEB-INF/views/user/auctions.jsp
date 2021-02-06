@@ -9,6 +9,8 @@
             Opis: <h3>${apartment.content}</h3><br/>
             <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a><br/>
             <a href="<c:url value="/app/apartment/edit/${apartment.id}" />">Edytuj</a><br/>
+            <a href="<c:url value="/app/apartment/remove/${apartment.id}" />">Usun aukcje</a><br/>
+
         </c:forEach>
     </c:when>
     <c:otherwise>

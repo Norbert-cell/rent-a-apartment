@@ -2,4 +2,4 @@
 
 
 ${notOwnerUserError}<br/>
-<a href="<c:url value="/app/"/>">Wroc</a>
+<a href="<c:url value="/app/1"/>">Wroc</a>

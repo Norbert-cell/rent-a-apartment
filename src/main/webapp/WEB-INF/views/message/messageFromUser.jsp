@@ -5,6 +5,11 @@
 Tytul: ${messageTitle}<br/>
 <c:forEach items="${messages}" var="message">
     ${message.dateOfSendMsg}
+    <c:forEach items="${users}" var="user">
+        <c:if test="${user.id==message.senderUserId}">
+            ${user.fullName}<br/>
+        </c:if>
+    </c:forEach>
     ${message.content}<br/>
 </c:forEach>
 <input hidden value="${senderId}" name="senderId">

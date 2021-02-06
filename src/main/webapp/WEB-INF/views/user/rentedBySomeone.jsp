@@ -10,6 +10,7 @@
             <a href="<c:url value="/app/apartment/details/${apartment.id}" />">Szczegoly</a><br/>
             Najemca: <a href="<c:url value="/app/user/details/${apartment.tenantUser.id}"/>">
             ${apartment.tenantUser.fullName}</a><br/>
+            <a href="<c:url value="/app/apartment/termination/${apartment.id}" />">Wypowiedz umowe</a><br/>
         </c:forEach>
     </c:when>
     <c:otherwise>

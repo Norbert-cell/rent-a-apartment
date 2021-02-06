@@ -15,7 +15,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -87,6 +88,11 @@ public class MessageController {
         Double estimatedPrice = messages.stream()
                 .map(Message::getEstimatedPrice)
                 .findFirst().orElse(0.0);
+
+        Set<User> users = messages.stream().map(x -> messageService.getUserById(x.getSenderUserId()))
+                .collect(Collectors.toSet());
+
+        model.addAttribute("users",users);
 
         model.addAttribute("userFullName",messageService.getSenderUserFullNameByUserId(senderId));
         model.addAttribute("messageTitle", title);
