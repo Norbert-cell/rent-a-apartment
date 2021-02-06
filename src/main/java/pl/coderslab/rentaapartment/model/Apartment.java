@@ -44,7 +44,6 @@ public class Apartment {
     @Min(value = 1, groups = {ApartmentValidationGroup.class}, message = "Podaj koszty utrzymania mieszkania!")
     private Double myBills;
     @OneToMany(cascade = CascadeType.ALL)
-    @Valid
     private List<Image> images = new ArrayList<>();
 
     public List<Image> getImages() {

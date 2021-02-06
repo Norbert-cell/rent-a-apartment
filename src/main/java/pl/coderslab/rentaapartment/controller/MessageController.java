@@ -35,11 +35,7 @@ public class MessageController {
     public String sendMsg(@RequestParam("type") MessageType messageType ,@PathVariable long apartmentId,
                                 @PathVariable long senderId, Model model, Principal principal){
         User principalUser = messageService.getPrincipalUser(principal.getName());
-
-        boolean checkContact = messageService.checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(principalUser.getId(), senderId, apartmentId);
-        if (!checkContact){
-            return "redirect:/app/1";
-        }
+        
 
         Message message = new Message();
         message.setType(messageType);

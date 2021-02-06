@@ -22,7 +22,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping({"/app", "/app/"})
+@RequestMapping("/app")
 public class AppController {
 
     private ApartmentService apartmentService;

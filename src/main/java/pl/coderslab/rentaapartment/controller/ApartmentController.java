@@ -80,14 +80,17 @@ public class ApartmentController {
     @GetMapping("/details/{id}")
     public String detailsApartment(@PathVariable long id, Model model, Principal principal) throws NotFoundException {
         long userId = userService.findByUserName(principal.getName()).orElse(new User()).getId();
-        Apartment apartment = apartmentService.findById(id).orElseThrow(()->new NotFoundException("Nie znaleziono"));
+        Apartment apartment = apartmentService.findById(id).orElse(null);
+        if (apartment == null){
+            return "redirect:/app/1";
+        }
         model.addAttribute("apartment", apartment);
         model.addAttribute("senderId",userId);
         return "apartment/detailsApartment";
     }
 
     @GetMapping("/edit/{id}")
-    public String editApartment(Model model,@PathVariable long id, Principal principal) throws NotFoundException {
+    public String editApartment(@PathVariable long id, Principal principal,Model model) throws NotFoundException {
         User ownerUser = userService.findByUserName(principal.getName()).orElseThrow(()->new NotFoundException("No value present"));
         Optional<Apartment> apartmentToEdit = apartmentService.findById(id);
         boolean foundedApartment = apartmentService.findApartmentByUserToCheckIsOwnerUser(ownerUser,apartmentToEdit);

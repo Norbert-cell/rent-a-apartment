@@ -12,7 +12,7 @@
             <form:hidden path="id"/> <br/>
             <form:hidden path="created"/><br/>
             <form:hidden path="rented"/><br/>
-            <form:hidden path="ownerUser.id"/><br/>
+            <form:hidden path="ownerUser"/><br/>
             <form:hidden path="address.id"/><br/>
             Tytuł: <form:input path="title"/> <br/>
             <form:errors path="title" cssStyle="color: red"/><br/>

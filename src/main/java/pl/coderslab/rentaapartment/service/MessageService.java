@@ -110,12 +110,4 @@ public class MessageService {
         return userRepository.findById(senderId).orElse(new User());
     }
 
-
-    public boolean checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(long principalId, long senderId, long apartmentId) {
-        int i = messageRepository.checkIsPrincipalUserHaveContactWithOwnerUserAboutApartment(principalId, senderId, apartmentId);
-        if (i>0){
-            return true;
-        }
-        return false;
-    }
 }
